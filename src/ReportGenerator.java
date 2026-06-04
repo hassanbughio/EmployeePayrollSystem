@@ -6,14 +6,16 @@ import java.util.Map;
 
 public class ReportGenerator {
 
+    private static final String PROJECT_PATH = "C:\\Users\\Muhammad Hassan\\Desktop\\EmployeePayrollSystem";
+
     public void generateSalarySlip(int empId, String empName, int month,
                                    int year, double basicSalary, double bonus,
-                                   double tax, double deductions, double netSalary) {
+                                   double tax, double deductions, double netSalary,
+                                   String empPhoto) {
         try {
-            // JRXML file path
-            String reportPath = "reports/salary_slip.jrxml";
+            String reportPath = PROJECT_PATH + "\\reports\\salary_slip.jrxml";
+            String outputPath = PROJECT_PATH + "\\reports\\salary_slip_" + empId + "_" + month + "_" + year + ".pdf";
 
-            // Parameters
             Map<String, Object> params = new HashMap<>();
             params.put("emp_id", empId);
             params.put("emp_name", empName);
@@ -24,13 +26,10 @@ public class ReportGenerator {
             params.put("tax", tax);
             params.put("deductions", deductions);
             params.put("net_salary", netSalary);
+            params.put("emp_photo", empPhoto);  // ← photo add kiya
 
-            // Compile aur Fill
             JasperReport jasperReport = JasperCompileManager.compileReport(reportPath);
             JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, params, new JREmptyDataSource());
-
-            // PDF Export
-            String outputPath = "reports/salary_slip_" + empId + "_" + month + "_" + year + ".pdf";
             JasperExportManager.exportReportToPdfFile(jasperPrint, outputPath);
 
             System.out.println("✅ Salary Slip Generated: " + outputPath);

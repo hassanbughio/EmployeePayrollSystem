@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Payroll System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; }
+        .sidebar {
+            width: 260px; height: 100vh;
+            background: linear-gradient(180deg, #1a1a2e, #16213e, #0f3460);
+            position: fixed; left: 0; top: 0; padding: 20px 0; z-index: 100;
+        }
+        .sidebar-brand { text-align: center; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 20px; }
+        .sidebar-brand h4 { color: white; font-weight: 700; }
+        .sidebar-brand p { color: rgba(255,255,255,0.5); font-size: 12px; }
+        .nav-item a {
+            display: flex; align-items: center; gap: 12px;
+            padding: 14px 25px; color: rgba(255,255,255,0.7);
+            text-decoration: none; transition: all 0.3s; border-left: 3px solid transparent;
+        }
+        .nav-item a:hover, .nav-item a.active {
+            background: rgba(255,255,255,0.1); color: white; border-left: 3px solid #e94560;
+        }
+        .nav-item a i { width: 20px; }
+        .main-content { margin-left: 260px; padding: 30px; }
+        .topbar {
+            background: white; padding: 15px 25px; border-radius: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 30px; box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+        .topbar h5 { color: #1a1a2e; font-weight: 700; margin: 0; }
+        .stat-card {
+            background: white; border-radius: 15px; padding: 25px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08); transition: transform 0.3s;
+        }
+        .stat-card:hover { transform: translateY(-5px); }
+        .stat-icon {
+            width: 55px; height: 55px; border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 22px; color: white;
+        }
+        .stat-card h3 { font-size: 28px; font-weight: 700; margin: 10px 0 5px; }
+        .stat-card p { color: #888; margin: 0; font-size: 14px; }
+        .action-card {
+            background: white; border-radius: 15px; padding: 25px; text-align: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08); cursor: pointer;
+            transition: all 0.3s; text-decoration: none; display: block; color: inherit;
+        }
+        .action-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .action-card i { font-size: 35px; margin-bottom: 10px; }
+        .action-card h6 { font-weight: 600; margin: 0; color: #1a1a2e; }
+        .page-section { display: none; }
+        .page-section.active { display: block; }
+
+        /* ===== MOBILE RESPONSIVE ===== */
+        .hamburger {
+            display: none;
+            position: fixed; top: 15px; left: 15px;
+            z-index: 200; background: #0f3460;
+            border: none; border-radius: 8px;
+            padding: 8px 12px; color: white; font-size: 18px;
+            cursor: pointer;
+        }
+        .sidebar-overlay {
+            display: none;
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+        }
+        .sidebar-overlay.active { display: block; }
+
+        @media (max-width: 768px) {
+            .hamburger { display: block; }
+            .sidebar {
+                left: -260px;
+                transition: left 0.3s ease;
+                z-index: 150;
+            }
+            .sidebar.open { left: 0; }
+            .main-content {
+                margin-left: 0;
+                padding: 15px;
+                padding-top: 60px;
+            }
+            .topbar { padding: 10px 15px; flex-wrap: wrap; gap: 8px; }
+            .topbar h5 { font-size: 14px; }
+            .stat-card { padding: 15px; }
+            .stat-card h3 { font-size: 22px; }
+            .stat-icon { width: 45px; height: 45px; font-size: 18px; }
+            .action-card { padding: 15px; }
+            .action-card i { font-size: 25px; }
+            .table { font-size: 12px; }
+            .table td, .table th { padding: 6px 4px; }
+            .btn-sm { font-size: 10px; padding: 3px 6px; }
+            .card-header { flex-wrap: wrap; gap: 8px; }
+            .form-control { font-size: 14px; }
+        }
+
+        @media (max-width: 480px) {
+            .main-content { padding: 10px; padding-top: 55px; }
+            .stat-card h3 { font-size: 18px; }
+            .topbar h5 { font-size: 13px; }
+            .table-responsive { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+            .table { min-width: 500px; }
+        }
+    </style>
+</head>
+<body>
+
+<button class="hamburger" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+</button>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <h4>💼 Payroll</h4>
+        <p>Management System</p>
+    </div>
+    <ul class="nav flex-column nav-item">
+        <li class="nav-item">
+            <a href="#" class="active" onclick="showPage('dashboard')">
+                <i class="fas fa-home"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" onclick="showPage('employees')">
+                <i class="fas fa-users"></i> Employees
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" onclick="showPage('leave')">
+                <i class="fas fa-calendar-alt"></i> Leave Management
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" onclick="showPage('payroll')">
+                <i class="fas fa-money-bill-wave"></i> Payroll
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" onclick="showPage('departments')">
+                <i class="fas fa-building"></i> Departments
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" onclick="showPage('attendance')">
+                <i class="fas fa-calendar-check"></i> Attendance
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" onclick="showPage('reports')">
+                <i class="fas fa-file-pdf"></i> Reports
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="#" onclick="showPage('deptreports')">
+                <i class="fas fa-chart-bar"></i> Dept Reports
+            </a>
+        </li>
+        <li class="nav-item mt-3">
+            <a href="login.html" style="color: #e94560;">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <div class="topbar">
+        <h5 id="pageTitle">📊 Dashboard</h5>
+        <div>
+            <span class="badge bg-success">🟢 Online</span>
+            <span class="ms-3 fw-bold text-muted">Admin</span>
+        </div>
+    </div>
+
+    <!-- Dashboard Page -->
+    <div id="page-dashboard" class="page-section active">
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 id="totalEmployees">0</h3>
+                    <p>Total Employees</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3 id="pendingLeaves">0</h3>
+                    <p>Pending Leaves</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                        <i class="fas fa-money-bill-wave"></i>
+                    </div>
+                    <h3 id="totalPayroll">0</h3>
+                    <p>Payroll Records</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <h3 id="totalDepts">0</h3>
+                    <p>Departments</p>
+                </div>
+            </div>
+        </div>
+        <h6 class="fw-bold mb-3 text-muted">QUICK ACTIONS</h6>
+        <div class="row g-4">
+            <div class="col-md-3">
+                <a class="action-card" onclick="showPage('employees')">
+                    <i class="fas fa-user-plus" style="color: #667eea;"></i>
+                    <h6>Add Employee</h6>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a class="action-card" onclick="showPage('leave')">
+                    <i class="fas fa-calendar-plus" style="color: #f5576c;"></i>
+                    <h6>Apply Leave</h6>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a class="action-card" onclick="showPage('payroll')">
+                    <i class="fas fa-file-invoice-dollar" style="color: #4facfe;"></i>
+                    <h6>Generate Payroll</h6>
+                </a>
+            </div>
+            <div class="col-md-3">
+                <a class="action-card" onclick="showPage('reports')">
+                    <i class="fas fa-file-pdf" style="color: #43e97b;"></i>
+                    <h6>View Reports</h6>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Employees Page -->
+    <div id="page-employees" class="page-section">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between">
+                <h5 class="fw-bold">👥 Employee Management</h5>
+                <button class="btn btn-primary rounded-3" onclick="showAddEmployee()">
+                    <i class="fas fa-plus"></i> Add Employee
+                </button>
+            </div>
+            <div class="card-body px-4">
+                <div id="addEmployeeForm" class="bg-light rounded-3 p-4 mb-4 d-none">
+                    <h6 class="fw-bold mb-3" id="formTitle">Add New Employee</h6>
+                    <input type="hidden" id="editEmpId">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <input type="text" id="empName" class="form-control" placeholder="Full Name">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="email" id="empEmail" class="form-control" placeholder="Email">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="text" id="empPhone" class="form-control" placeholder="Phone">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="number" id="empSalary" class="form-control" placeholder="Salary">
+                        </div>
+                        <div class="col-md-6">
+                            <input type="number" id="empDept" class="form-control" placeholder="Department ID">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small mb-1">Employee Photo</label>
+                            <input type="file" id="empPhoto" class="form-control" accept="image/*" onchange="previewPhoto(this)">
+                        </div>
+                        <div class="col-md-6 d-none" id="photoPreviewDiv">
+                            <img id="photoPreview" src="" class="rounded-circle" style="width:60px;height:60px;object-fit:cover;">
+                        </div>
+                        <div class="col-md-6">
+                            <button id="saveEmpBtn" class="btn btn-success w-100" onclick="saveEmployee()">
+                                <i class="fas fa-save"></i> Save Employee
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Search/Filter Bar -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white"><i class="fas fa-search text-muted"></i></span>
+                            <input type="text" id="searchName" class="form-control" placeholder="Search by name..." oninput="filterEmployees()">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" id="searchEmail" class="form-control" placeholder="Search by email..." oninput="filterEmployees()">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" id="searchMinSalary" class="form-control" placeholder="Min salary..." oninput="filterEmployees()">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-outline-secondary w-100" onclick="clearFilters()">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-responsive"><table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Photo</th><th>ID</th><th>Name</th><th>Email</th>
+                            <th>Phone</th><th>Salary</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTable"></tbody>
+                </table></div>
+                <div id="noResultsMsg" class="text-center text-muted py-3 d-none">
+                    <i class="fas fa-search fa-2x mb-2"></i>
+                    <p>No employees found matching your search.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leave Page -->
+    <div id="page-leave" class="page-section">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between">
+                <h5 class="fw-bold">📅 Leave Management</h5>
+                <button class="btn btn-primary rounded-3" onclick="showApplyLeave()">
+                    <i class="fas fa-plus"></i> Apply Leave
+                </button>
+            </div>
+            <div class="card-body px-4">
+                <div id="applyLeaveForm" class="bg-light rounded-3 p-4 mb-4 d-none">
+                    <h6 class="fw-bold mb-3">Apply New Leave</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="number" id="leaveEmpId" class="form-control" placeholder="Employee ID">
+                        </div>
+                        <div class="col-md-4">
+                            <select id="leaveType" class="form-control">
+                                <option>Sick Leave</option>
+                                <option>Annual Leave</option>
+                                <option>Casual Leave</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <input type="date" id="leaveStart" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="date" id="leaveEnd" class="form-control">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-success w-100" onclick="applyLeave()">
+                                <i class="fas fa-save"></i> Submit Leave
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive"><table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th><th>Emp ID</th><th>Type</th>
+                            <th>Start</th><th>End</th><th>Status</th><th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaveTable"></tbody>
+                </table></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payroll Page -->
+    <div id="page-payroll" class="page-section">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between">
+                <h5 class="fw-bold">💰 Payroll Management</h5>
+                <button class="btn btn-primary rounded-3" onclick="showGeneratePayroll()">
+                    <i class="fas fa-plus"></i> Generate Payroll
+                </button>
+            </div>
+            <div class="card-body px-4">
+                <div id="generatePayrollForm" class="bg-light rounded-3 p-4 mb-4 d-none">
+                    <h6 class="fw-bold mb-3">Generate New Payroll</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <input type="number" id="payEmpId" class="form-control" placeholder="Employee ID">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" id="payMonth" class="form-control" placeholder="Month (1-12)">
+                        </div>
+                        <div class="col-md-4">
+                            <input type="number" id="payYear" class="form-control" placeholder="Year">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" id="payBasic" class="form-control" placeholder="Basic Salary">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" id="payBonus" class="form-control" placeholder="Bonus">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" id="payTax" class="form-control" placeholder="Tax">
+                        </div>
+                        <div class="col-md-3">
+                            <input type="number" id="payDeductions" class="form-control" placeholder="Deductions">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-success w-100" onclick="generatePayroll()">
+                                <i class="fas fa-save"></i> Generate
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive"><table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th><th>Emp ID</th><th>Month/Year</th>
+                            <th>Basic</th><th>Bonus</th><th>Tax</th><th>Net Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody id="payrollTable"></tbody>
+                </table></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Departments Page -->
+    <div id="page-departments" class="page-section">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between">
+                <h5 class="fw-bold">🏢 Department Management</h5>
+                <button class="btn btn-primary rounded-3" onclick="showAddDepartment()">
+                    <i class="fas fa-plus"></i> Add Department
+                </button>
+            </div>
+            <div class="card-body px-4">
+                <div id="addDepartmentForm" class="bg-light rounded-3 p-4 mb-4 d-none">
+                    <h6 class="fw-bold mb-3">Add New Department</h6>
+                    <div class="row g-3">
+                        <div class="col-md-5">
+                            <input type="text" id="deptName" class="form-control" placeholder="Department Name">
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" id="deptLocation" class="form-control" placeholder="Location">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-success w-100" onclick="addDepartment()">
+                                <i class="fas fa-save"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive"><table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Dept ID</th><th>Department Name</th><th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody id="departmentTable"></tbody>
+                </table></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reports Page -->
+    <div id="page-reports" class="page-section">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+                <h5 class="fw-bold">📄 Reports</h5>
+            </div>
+            <div class="card-body px-4">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="bg-light rounded-3 p-4">
+                            <h6 class="fw-bold">Salary Slip</h6>
+                            <div class="row g-3 mt-2">
+                                <div class="col-6">
+                                    <input type="number" id="reportEmpId" class="form-control" placeholder="Employee ID">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" id="reportMonth" class="form-control" placeholder="Month">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" id="reportYear" class="form-control" placeholder="Year">
+                                </div>
+                                <div class="col-6">
+                                    <button class="btn btn-danger w-100" onclick="generateReport()">
+                                        <i class="fas fa-file-pdf"></i> Generate PDF
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Attendance Page -->
+    <div id="page-attendance" class="page-section">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 px-4 d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold">📅 Attendance Management</h5>
+                <button class="btn btn-primary rounded-3" onclick="showMarkAttendance()">
+                    <i class="fas fa-plus"></i> Mark Attendance
+                </button>
+            </div>
+            <div class="card-body px-4">
+
+                <!-- Mark Attendance Form -->
+                <div id="markAttendanceForm" class="bg-light rounded-3 p-4 mb-4 d-none">
+                    <h6 class="fw-bold mb-3">Mark Attendance</h6>
+                    <div id="attendanceMsg" class="alert d-none"></div>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <select id="attendanceEmpId" class="form-control">
+                                <option value="">Select Employee</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-control bg-white d-flex align-items-center gap-2">
+                                <i class="fas fa-clock text-primary"></i>
+                                <span id="currentTimeDisplay" class="fw-bold"></span>
+                                <span id="autoStatusBadge" class="badge ms-auto"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-success w-100" onclick="markAttendance()">
+                                <i class="fas fa-fingerprint"></i> Check In
+                            </button>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6 class="fw-bold mb-3">Mark Check Out</h6>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <select id="checkoutEmpId" class="form-control">
+                                <option value="">Select Employee</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-control bg-white d-flex align-items-center gap-2">
+                                <i class="fas fa-sign-out-alt text-danger"></i>
+                                <span class="fw-bold">Check Out Time: Now</span>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-danger w-100" onclick="markCheckOut()">
+                                <i class="fas fa-sign-out-alt"></i> Check Out
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <input type="date" id="filterDate" class="form-control" onchange="loadAttendance()">
+                    </div>
+                    <div class="col-md-4">
+                        <input type="number" id="filterEmpId" class="form-control" placeholder="Filter by Employee ID" oninput="loadAttendance()">
+                    </div>
+                    <div class="col-md-4">
+                        <button class="btn btn-secondary w-100" onclick="clearAttendanceFilter()">
+                            <i class="fas fa-times"></i> Clear Filter
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="row g-3 mb-4" id="attendanceSummary"></div>
+
+                <!-- Attendance Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Employee</th>
+                                <th>Date</th>
+                                <th>Check In</th>
+                                <th>Check Out</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="attendanceTable"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Department Reports Page -->
+    <div id="page-deptreports" class="page-section">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="card-header bg-white border-0 pt-4 px-4">
+                <h5 class="fw-bold">📊 Department Wise Reports</h5>
+            </div>
+            <div class="card-body px-4">
+                <div class="table-responsive"><table class="table table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>ID</th>
+                            <th>Department</th>
+                            <th>Location</th>
+                            <th>Total Employees</th>
+                            <th>Total Salary</th>
+                            <th>Avg Salary</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deptReportTable"></tbody>
+                </table></div>
+                <!-- Summary Cards -->
+                <div class="row g-4 mt-3" id="deptSummaryCards"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script>
+    function showPage(page) {
+        $('.page-section').removeClass('active');
+        $('#page-' + page).addClass('active');
+        $('.nav-item a').removeClass('active');
+        $(`[onclick="showPage('${page}')"]`).addClass('active');
+        const titles = {
+            dashboard: '📊 Dashboard',
+            employees: '👥 Employee Management',
+            leave: '📅 Leave Management',
+            payroll: '💰 Payroll Management',
+            departments: '🏢 Department Management',
+            attendance: '📅 Attendance Management',
+            reports: '📄 Reports',
+            deptreports: '📊 Department Wise Reports'
+        };
+        $('#pageTitle').text(titles[page]);
+        if (page === 'employees') loadEmployees();
+        if (page === 'leave') loadLeaves();
+        if (page === 'payroll') loadPayroll();
+        if (page === 'dashboard') loadStats();
+        if (page === 'attendance') loadAttendance();
+        if (page === 'departments') loadDepartments();
+        if (page === 'deptreports') loadDeptReport();
+    }
+
+    function loadStats() {
+        $.ajax({
+            url: 'getStats', type: 'GET', dataType: 'json',
+            success: function(d) {
+                $('#totalEmployees').text(d.employees);
+                $('#pendingLeaves').text(d.pendingLeaves);
+                $('#totalPayroll').text(d.payroll);
+                $('#totalDepts').text(d.departments);
+            }
+        });
+    }
+
+    // ========== EMPLOYEE FUNCTIONS ==========
+    let allEmployees = []; // sare employees store karo
+
+    function filterEmployees() {
+        const name = $('#searchName').val().toLowerCase();
+        const email = $('#searchEmail').val().toLowerCase();
+        const minSalary = parseFloat($('#searchMinSalary').val()) || 0;
+
+        const filtered = allEmployees.filter(emp => {
+            return emp.empName.toLowerCase().includes(name) &&
+                   emp.email.toLowerCase().includes(email) &&
+                   emp.salary >= minSalary;
+        });
+
+        renderEmployeeTable(filtered);
+    }
+
+    function clearFilters() {
+        $('#searchName').val('');
+        $('#searchEmail').val('');
+        $('#searchMinSalary').val('');
+        renderEmployeeTable(allEmployees);
+    }
+
+    function renderEmployeeTable(employees) {
+        let html = '';
+        if (employees.length === 0) {
+            $('#employeeTable').html('');
+            $('#noResultsMsg').removeClass('d-none');
+            return;
+        }
+        $('#noResultsMsg').addClass('d-none');
+        employees.forEach(emp => {
+            const photoSrc = emp.photo
+                ? `photos/${emp.photo}`
+                : `https://ui-avatars.com/api/?name=${encodeURIComponent(emp.empName)}&background=0f3460&color=fff&size=40`;
+            html += `<tr>
+                <td><img src="${photoSrc}" class="rounded-circle" style="width:40px;height:40px;object-fit:cover;" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(emp.empName)}&background=0f3460&color=fff&size=40'"></td>
+                <td>${emp.empId}</td>
+                <td>${emp.empName}</td>
+                <td>${emp.email}</td>
+                <td>${emp.phone}</td>
+                <td>PKR ${emp.salary}</td>
+                <td>
+                    <button class="btn btn-sm btn-warning me-1" onclick="editEmployee(${emp.empId}, '${emp.empName}', '${emp.email}', '${emp.phone}', ${emp.salary})">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteEmployee(${emp.empId})">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            </tr>`;
+        });
+        $('#employeeTable').html(html);
+    }
+    function previewPhoto(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                $('#photoPreview').attr('src', e.target.result);
+                $('#photoPreviewDiv').removeClass('d-none');
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function showAddEmployee() {
+        $('#formTitle').text('Add New Employee');
+        $('#saveEmpBtn').html('<i class="fas fa-save"></i> Save Employee');
+        $('#editEmpId').val('');
+        $('#empName').val('');
+        $('#empEmail').val('');
+        $('#empPhone').val('');
+        $('#empSalary').val('');
+        $('#empDept').val('');
+        $('#empPhoto').val('');
+        $('#photoPreviewDiv').addClass('d-none');
+        $('#addEmployeeForm').toggleClass('d-none');
+    }
+
+    function saveEmployee() {
+        const editId = $('#editEmpId').val();
+        if (editId) {
+            updateEmployee(editId);
+        } else {
+            addEmployee();
+        }
+    }
+
+    function addEmployee() {
+        $.ajax({
+            url: 'addEmployee', type: 'POST',
+            data: {
+                empName: $('#empName').val(),
+                email: $('#empEmail').val(),
+                phone: $('#empPhone').val(),
+                salary: $('#empSalary').val(),
+                deptId: $('#empDept').val()
+            },
+            success: function(res) {
+                if (res === 'success') {
+                    alert('✅ Employee Added!');
+                    $('#addEmployeeForm').addClass('d-none');
+                    loadEmployees(); loadStats();
+                } else {
+                    alert('❌ Error: ' + res);
+                }
+            },
+            error: function(xhr) { alert('❌ Server Error: ' + xhr.responseText); }
+        });
+    }
+
+    function editEmployee(id, name, email, phone, salary) {
+        $('#formTitle').text('Update Employee');
+        $('#saveEmpBtn').html('<i class="fas fa-edit"></i> Update Employee');
+        $('#editEmpId').val(id);
+        $('#empName').val(name);
+        $('#empEmail').val(email);
+        $('#empPhone').val(phone);
+        $('#empSalary').val(salary);
+        $('#addEmployeeForm').removeClass('d-none');
+        window.scrollTo(0, 0);
+    }
+
+    function updateEmployee(id) {
+        var formData = new FormData();
+        formData.append('empId', id);
+        formData.append('empName', $('#empName').val());
+        formData.append('email', $('#empEmail').val());
+        formData.append('phone', $('#empPhone').val());
+        formData.append('salary', $('#empSalary').val());
+
+        var photoFile = $('#empPhoto')[0].files[0];
+        if (photoFile) {
+            formData.append('photo', photoFile);
+        }
+
+        $.ajax({
+            url: 'updateEmployee', type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(res) {
+                if (res === 'success') {
+                    alert('✅ Employee Updated!');
+                    $('#addEmployeeForm').addClass('d-none');
+                    $('#editEmpId').val('');
+                    $('#empPhoto').val('');
+                    $('#photoPreviewDiv').addClass('d-none');
+                    loadEmployees(); loadStats();
+                }
+            },
+            error: function(xhr) { alert('❌ Server Error: ' + xhr.responseText); }
+        });
+    }
+
+    function loadEmployees() {
+        $.ajax({
+            url: 'getEmployees', type: 'GET', dataType: 'json',
+            success: function(employees) {
+                allEmployees = employees;
+                renderEmployeeTable(allEmployees);
+            },
+            error: function() {
+                $('#employeeTable').html('<tr><td colspan="7" class="text-center text-danger">Failed to load</td></tr>');
+            }
+        });
+    }
+
+    function deleteEmployee(id) {
+        if (confirm('Delete this employee?')) {
+            $.post('deleteEmployee', { empId: id }, function(res) {
+                if (res === 'success') { loadEmployees(); loadStats(); }
+            });
+        }
+    }
+
+    // ========== LEAVE FUNCTIONS ==========
+    function showApplyLeave() {
+        $('#applyLeaveForm').toggleClass('d-none');
+    }
+
+    function applyLeave() {
+        $.ajax({
+            url: 'applyLeave', type: 'POST',
+            data: {
+                empId: $('#leaveEmpId').val(),
+                leaveType: $('#leaveType').val(),
+                startDate: $('#leaveStart').val(),
+                endDate: $('#leaveEnd').val()
+            },
+            success: function(res) {
+                if (res === 'success') {
+                    alert('✅ Leave Applied!');
+                    $('#applyLeaveForm').addClass('d-none');
+                    loadLeaves(); loadStats();
+                }
+            }
+        });
+    }
+
+    function loadLeaves() {
+        $.ajax({
+            url: 'getLeaves', type: 'GET', dataType: 'json',
+            success: function(leaves) {
+                let html = '';
+                if (leaves.length === 0) {
+                    html = '<tr><td colspan="7" class="text-center text-muted">No leave requests found</td></tr>';
+                } else {
+                    leaves.forEach(l => {
+                        const badge = l.status === 'APPROVED' ? 'success' :
+                                      l.status === 'REJECTED' ? 'danger' : 'warning';
+                        html += `<tr>
+                            <td>${l.leaveId}</td>
+                            <td>${l.empId}</td>
+                            <td>${l.leaveType}</td>
+                            <td>${l.startDate}</td>
+                            <td>${l.endDate}</td>
+                            <td><span class="badge bg-${badge}">${l.status}</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-success me-1" onclick="approveLeave(${l.leaveId})">✅</button>
+                                <button class="btn btn-sm btn-danger" onclick="rejectLeave(${l.leaveId})">❌</button>
+                            </td>
+                        </tr>`;
+                    });
+                }
+                $('#leaveTable').html(html);
+            }
+        });
+    }
+
+    function approveLeave(id) {
+        $.post('updateLeave', { leaveId: id, status: 'APPROVED' }, function() { loadLeaves(); loadStats(); });
+    }
+
+    function rejectLeave(id) {
+        $.post('updateLeave', { leaveId: id, status: 'REJECTED' }, function() { loadLeaves(); loadStats(); });
+    }
+
+    // ========== PAYROLL FUNCTIONS ==========
+    function showGeneratePayroll() {
+        $('#generatePayrollForm').toggleClass('d-none');
+    }
+
+    function generatePayroll() {
+        $.ajax({
+            url: 'generatePayroll', type: 'POST',
+            data: {
+                empId: $('#payEmpId').val(),
+                month: $('#payMonth').val(),
+                year: $('#payYear').val(),
+                basicSalary: $('#payBasic').val(),
+                bonus: $('#payBonus').val(),
+                tax: $('#payTax').val(),
+                deductions: $('#payDeductions').val()
+            },
+            success: function(res) {
+                if (res === 'success') {
+                    alert('✅ Payroll Generated!');
+                    $('#generatePayrollForm').addClass('d-none');
+                    loadPayroll(); loadStats();
+                }
+            }
+        });
+    }
+
+    function loadPayroll() {
+        $.ajax({
+            url: 'getPayroll', type: 'GET', dataType: 'json',
+            success: function(payrolls) {
+                let html = '';
+                if (payrolls.length === 0) {
+                    html = '<tr><td colspan="7" class="text-center text-muted">No payroll records found</td></tr>';
+                } else {
+                    payrolls.forEach(p => {
+                        html += `<tr>
+                            <td>${p.payrollId}</td>
+                            <td>${p.empId}</td>
+                            <td>${p.month}/${p.year}</td>
+                            <td>PKR ${p.basicSalary}</td>
+                            <td>PKR ${p.bonus}</td>
+                            <td>PKR ${p.tax}</td>
+                            <td><strong>PKR ${p.netSalary}</strong></td>
+                        </tr>`;
+                    });
+                }
+                $('#payrollTable').html(html);
+            }
+        });
+    }
+
+    // ========== REPORT FUNCTION ==========
+    function generateReport() {
+        const empId = $('#reportEmpId').val();
+        const month = $('#reportMonth').val();
+        const year = $('#reportYear').val();
+        window.open(`generateReport?empId=${empId}&month=${month}&year=${year}`, '_blank');
+    }
+
+    // ========== DEPARTMENT FUNCTIONS ==========
+    function showAddDepartment() {
+        $('#deptName').val('');
+        $('#deptLocation').val('');
+        $('#addDepartmentForm').toggleClass('d-none');
+    }
+
+    function addDepartment() {
+        const deptName = $('#deptName').val().trim();
+        const location = $('#deptLocation').val().trim();
+        if (!deptName || !location) {
+            alert('⚠️ Please fill in both fields.');
+            return;
+        }
+        $.ajax({
+            url: 'addDepartment', type: 'POST',
+            data: { deptName: deptName, location: location },
+            success: function(res) {
+                if (res === 'success') {
+                    alert('✅ Department Added!');
+                    $('#addDepartmentForm').addClass('d-none');
+                    loadDepartments();
+                    loadStats();
+                } else {
+                    alert('❌ Error: ' + res);
+                }
+            },
+            error: function(xhr) { alert('❌ Server Error: ' + xhr.responseText); }
+        });
+    }
+
+    function loadDepartments() {
+        $.ajax({
+            url: 'getDepartments', type: 'GET', dataType: 'json',
+            success: function(departments) {
+                let html = '';
+                if (departments.length === 0) {
+                    html = '<tr><td colspan="3" class="text-center text-muted">No departments found</td></tr>';
+                } else {
+                    departments.forEach(d => {
+                        html += `<tr>
+                            <td>${d.deptId}</td>
+                            <td>${d.deptName}</td>
+                            <td>${d.location}</td>
+                        </tr>`;
+                    });
+                }
+                $('#departmentTable').html(html);
+            },
+            error: function() {
+                $('#departmentTable').html('<tr><td colspan="3" class="text-center text-danger">Failed to load departments</td></tr>');
+            }
+        });
+    }
+
+    // ========== ATTENDANCE FUNCTIONS ==========
+    // Live clock update
+    function updateClock() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        const seconds = now.getSeconds().toString().padStart(2, '0');
+        const timeStr = `${hours}:${minutes}:${seconds}`;
+        $('#currentTimeDisplay').text(timeStr);
+
+        // Auto status
+        const officeHour = 9;
+        const badge = $('#autoStatusBadge');
+        if (now.getHours() < officeHour) {
+            badge.removeClass('bg-warning bg-danger').addClass('bg-success').text('✅ PRESENT');
+        } else {
+            badge.removeClass('bg-success bg-danger').addClass('bg-warning text-dark').text('⏰ LATE');
+        }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    function showMarkAttendance() {
+        $('#markAttendanceForm').toggleClass('d-none');
+        // Load employees in both dropdowns
+        $.ajax({
+            url: 'getEmployees', type: 'GET', dataType: 'json',
+            success: function(employees) {
+                let options = '<option value="">Select Employee</option>';
+                employees.forEach(emp => {
+                    options += `<option value="${emp.empId}">${emp.empName}</option>`;
+                });
+                $('#attendanceEmpId').html(options);
+                $('#checkoutEmpId').html(options);
+            }
+        });
+    }
+
+    function markAttendance() {
+        const empId = $('#attendanceEmpId').val();
+        if (!empId) { alert('Please select employee!'); return; }
+
+        $.ajax({
+            url: 'markAttendance', type: 'POST',
+            data: { empId: empId, checkOut: '' },
+            success: function(res) {
+                const msg = $('#attendanceMsg');
+                msg.removeClass('d-none alert-success alert-warning alert-danger alert-info');
+                if (res === 'present') {
+                    msg.addClass('alert-success').text('✅ Check In successful — PRESENT!');
+                } else if (res === 'late') {
+                    msg.addClass('alert-warning').text('⏰ Check In successful — LATE! (After 9:00 AM)');
+                } else if (res === 'already_in') {
+                    msg.addClass('alert-info').text('ℹ️ Already checked in today! Use Check Out below.');
+                } else {
+                    msg.addClass('alert-danger').text('❌ Error marking attendance!');
+                }
+                setTimeout(() => {
+                    msg.addClass('d-none');
+                    $('#markAttendanceForm').addClass('d-none');
+                }, 2500);
+                loadAttendance();
+            }
+        });
+    }
+
+    function markCheckOut() {
+        const empId = $('#checkoutEmpId').val();
+        if (!empId) { alert('Please select employee!'); return; }
+
+        const now = new Date();
+        const checkOut = now.getHours().toString().padStart(2, '0') + ':' +
+                         now.getMinutes().toString().padStart(2, '0') + ':' +
+                         now.getSeconds().toString().padStart(2, '0');
+
+        $.ajax({
+            url: 'markAttendance', type: 'POST',
+            data: { empId: empId, checkOut: checkOut },
+            success: function(res) {
+                const msg = $('#attendanceMsg');
+                msg.removeClass('d-none alert-success alert-warning alert-danger alert-info');
+                if (res === 'checkout') {
+                    msg.addClass('alert-success').text('🚪 Check Out successful at ' + checkOut + '!');
+                } else if (res === 'not_checked_in') {
+                    msg.addClass('alert-danger').text('❌ Employee has not checked in today!');
+                } else {
+                    msg.addClass('alert-danger').text('❌ Error marking check out!');
+                }
+                setTimeout(() => {
+                    msg.addClass('d-none');
+                    $('#markAttendanceForm').addClass('d-none');
+                }, 2500);
+                loadAttendance();
+            }
+        });
+    }
+
+    function loadAttendance() {
+        const date = $('#filterDate').val();
+        const empId = $('#filterEmpId').val();
+
+        let url = 'getAttendance?';
+        if (date) url += 'date=' + date + '&';
+        if (empId) url += 'empId=' + empId;
+
+        $.ajax({
+            url: url, type: 'GET', dataType: 'json',
+            success: function(records) {
+                let html = '';
+                let present = 0, absent = 0, late = 0, halfDay = 0;
+
+                if (records.length === 0) {
+                    html = '<tr><td colspan="6" class="text-center text-muted">No attendance records found</td></tr>';
+                } else {
+                    records.forEach(r => {
+                        const badge = r.status === 'PRESENT' ? 'success' :
+                                      r.status === 'ABSENT' ? 'danger' :
+                                      r.status === 'LATE' ? 'warning' : 'info';
+                        if (r.status === 'PRESENT') present++;
+                        else if (r.status === 'ABSENT') absent++;
+                        else if (r.status === 'LATE') late++;
+                        else halfDay++;
+
+                        html += `<tr>
+                            <td>${r.attendanceId}</td>
+                            <td>${r.empName}</td>
+                            <td>${r.date}</td>
+                            <td>${r.checkIn || '—'}</td>
+                            <td>${r.checkOut || '—'}</td>
+                            <td><span class="badge bg-${badge}">${r.status}</span></td>
+                        </tr>`;
+                    });
+                }
+                $('#attendanceTable').html(html);
+
+                $('#attendanceSummary').html(`
+                    <div class="col-md-3">
+                        <div class="stat-card text-center">
+                            <div class="stat-icon mx-auto mb-2" style="background: linear-gradient(135deg, #43e97b, #38f9d7);">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h3>${present}</h3><p>Present</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card text-center">
+                            <div class="stat-icon mx-auto mb-2" style="background: linear-gradient(135deg, #f5576c, #f093fb);">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <h3>${absent}</h3><p>Absent</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card text-center">
+                            <div class="stat-icon mx-auto mb-2" style="background: linear-gradient(135deg, #f7971e, #ffd200);">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <h3>${late}</h3><p>Late</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-card text-center">
+                            <div class="stat-icon mx-auto mb-2" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">
+                                <i class="fas fa-adjust"></i>
+                            </div>
+                            <h3>${halfDay}</h3><p>Half Day</p>
+                        </div>
+                    </div>
+                `);
+            },
+            error: function() {
+                $('#attendanceTable').html('<tr><td colspan="6" class="text-center text-danger">Failed to load</td></tr>');
+            }
+        });
+    }
+
+    function clearAttendanceFilter() {
+        $('#filterDate').val('');
+        $('#filterEmpId').val('');
+        loadAttendance();
+    }
+
+    // ========== DEPT REPORT FUNCTION ==========
+    function loadDeptReport() {
+        $.ajax({
+            url: 'getDeptReport', type: 'GET', dataType: 'json',
+            success: function(depts) {
+                let html = '';
+                let cards = '';
+                let totalEmps = 0, totalSal = 0;
+
+                if (depts.length === 0) {
+                    html = '<tr><td colspan="6" class="text-center text-muted">No data found</td></tr>';
+                } else {
+                    depts.forEach(d => {
+                        totalEmps += d.empCount;
+                        totalSal += d.totalSalary;
+                        html += `<tr>
+                            <td>${d.deptId}</td>
+                            <td><strong>${d.deptName}</strong></td>
+                            <td>${d.location}</td>
+                            <td><span class="badge bg-primary">${d.empCount}</span></td>
+                            <td>PKR ${d.totalSalary.toLocaleString()}</td>
+                            <td>PKR ${Math.round(d.avgSalary).toLocaleString()}</td>
+                        </tr>`;
+                        cards += `
+                        <div class="col-md-4">
+                            <div class="stat-card">
+                                <div class="stat-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">
+                                    <i class="fas fa-building"></i>
+                                </div>
+                                <h3>${d.empCount}</h3>
+                                <p>${d.deptName} — ${d.location}</p>
+                                <small class="text-muted">Total: PKR ${d.totalSalary.toLocaleString()}</small>
+                            </div>
+                        </div>`;
+                    });
+                    html += `<tr class="table-warning fw-bold">
+                        <td colspan="3">Total</td>
+                        <td>${totalEmps}</td>
+                        <td>PKR ${totalSal.toLocaleString()}</td>
+                        <td>—</td>
+                    </tr>`;
+                }
+                $('#deptReportTable').html(html);
+                $('#deptSummaryCards').html(cards);
+            },
+            error: function() {
+                $('#deptReportTable').html('<tr><td colspan="6" class="text-center text-danger">Failed to load</td></tr>');
+            }
+        });
+    }
+
+    // ===== MOBILE SIDEBAR =====
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('active');
+    }
+
+    function closeSidebar() {
+        document.getElementById('sidebar').classList.remove('open');
+        document.getElementById('sidebarOverlay').classList.remove('active');
+    }
+
+    // Close sidebar when nav link clicked on mobile
+    document.querySelectorAll('.nav-item a').forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) closeSidebar();
+        });
+    });
+
+
+    $(document).ready(function() {
+        loadStats();
+        loadEmployees();
+    });
+</script>
+</body>
+</html>

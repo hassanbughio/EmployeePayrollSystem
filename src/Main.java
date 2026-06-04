@@ -35,7 +35,7 @@ public class Main {
         // 6. Report Test
         System.out.println("\n--- Test 6: Report ---");
         ReportGenerator report = new ReportGenerator();
-        report.generateSalarySlip(1, "Muhammad Hassan", 6, 2025, 50000, 5000, 3000, 2000, 50000);
+        report.generateSalarySlip(1, "Muhammad Hassan", 6, 2025, 50000, 5000, 3000, 2000, 50000, ""); // ← "" add kiya
 
         System.out.println("\n=== ALL TESTS PASSED ===");
     }
