@@ -16,27 +16,34 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         
-        System.out.println("📍 Login attempt: " + username);
-        
-        UserDAO userDAO = new UserDAO();
-        User user = userDAO.login(username, password);
+        System.out.println("\n===== LOGIN ATTEMPT =====");
+        System.out.println("Username: " + username);
+        System.out.println("========================\n");
         
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         
-        if (user != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user", user);
-            session.setAttribute("userId", user.getUserId());  // ← SAHI GETTER!
-            session.setAttribute("username", user.getUsername());
-            session.setAttribute("role", user.getRole());
+        try {
+            UserDAO userDAO = new UserDAO();
+            User user = userDAO.login(username, password);
             
-            System.out.println("✅ Login successful!");
-            
-            out.println("{\"success\": true, \"message\": \"Login successful\", \"userId\": " + user.getUserId() + ", \"role\": \"" + user.getRole() + "\"}");
-        } else {
-            System.out.println("❌ Login failed!");
-            out.println("{\"success\": false, \"message\": \"Invalid username or password\"}");
+            if (user != null) {
+                HttpSession session = request.getSession();
+                session.setAttribute("user", user);
+                session.setAttribute("userId", user.getUserId());
+                session.setAttribute("username", user.getUsername());
+                session.setAttribute("role", user.getRole());
+                
+                System.out.println("✅ LOGIN SUCCESS!");
+                out.println("{\"success\": true, \"message\": \"Login successful\", \"role\": \"" + user.getRole() + "\"}");
+            } else {
+                System.out.println("❌ LOGIN FAILED!");
+                out.println("{\"success\": false, \"message\": \"Invalid username or password\"}");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ EXCEPTION: " + e.getMessage());
+            e.printStackTrace();
+            out.println("{\"success\": false, \"message\": \"Error: " + e.getMessage() + "\"}");
         }
         
         out.flush();
