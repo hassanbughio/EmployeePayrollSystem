@@ -16,7 +16,7 @@ public class LoginServlet extends HttpServlet {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         
-        System.out.println("Login attempt: " + username);
+        System.out.println("📍 Login attempt: " + username);
         
         UserDAO userDAO = new UserDAO();
         User user = userDAO.login(username, password);
@@ -27,26 +27,16 @@ public class LoginServlet extends HttpServlet {
         if (user != null) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            session.setAttribute("userId", user.getId());
+            session.setAttribute("userId", user.getUserId());  // ← SAHI GETTER!
             session.setAttribute("username", user.getUsername());
             session.setAttribute("role", user.getRole());
             
-            System.out.println("Login successful: " + username);
+            System.out.println("✅ Login successful!");
             
-            out.println("{");
-            out.println("  \"success\": true,");
-            out.println("  \"message\": \"Login successful\",");
-            out.println("  \"userId\": " + user.getId() + ",");
-            out.println("  \"username\": \"" + username + "\",");
-            out.println("  \"role\": \"" + user.getRole() + "\"");
-            out.println("}");
+            out.println("{\"success\": true, \"message\": \"Login successful\", \"userId\": " + user.getUserId() + ", \"role\": \"" + user.getRole() + "\"}");
         } else {
-            System.out.println("Login failed: " + username);
-            
-            out.println("{");
-            out.println("  \"success\": false,");
-            out.println("  \"message\": \"Invalid username or password\"");
-            out.println("}");
+            System.out.println("❌ Login failed!");
+            out.println("{\"success\": false, \"message\": \"Invalid username or password\"}");
         }
         
         out.flush();
