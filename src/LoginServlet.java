@@ -7,23 +7,21 @@ import java.io.*;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
         
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         
-        if ("admin".equals(username) && "admin123".equals(password)) {
-            out.println("{\"success\": true, \"message\": \"Login successful\", \"role\": \"ADMIN\"}");
-        } else {
-            out.println("{\"success\": false, \"message\": \"Invalid credentials\"}");
-        }
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
         
-        out.flush();
-        out.close();
+        if ("admin".equals(username) && "admin123".equals(password)) {
+            out.print("{\"success\":true,\"message\":\"Login successful\",\"role\":\"ADMIN\"}");
+        } else if ("hassan".equals(username) && "user123".equals(password)) {
+            out.print("{\"success\":true,\"message\":\"Login successful\",\"role\":\"USER\"}");
+        } else {
+            out.print("{\"success\":false,\"message\":\"Invalid credentials\"}");
+        }
     }
 }
