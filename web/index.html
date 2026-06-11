@@ -1,32 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Login</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll System</title>
+    <script>
+        window.location.href = 'login.html';
+    </script>
 </head>
 <body>
-    <h1>Payroll System Login</h1>
-    
-    <form id="loginForm">
-        <input type="text" id="username" placeholder="Username" value="admin"><br>
-        <input type="password" id="password" placeholder="Password" value="admin123"><br>
-        <button type="button" onclick="login()">Login</button>
-    </form>
-    
-    <div id="result"></div>
-    
-    <script>
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            if (username === 'admin' && password === 'admin123') {
-                document.getElementById('result').innerHTML = '<h2>✅ Login Successful! Role: ADMIN</h2>';
-            } else if (username === 'hassan' && password === 'user123') {
-                document.getElementById('result').innerHTML = '<h2>✅ Login Successful! Role: USER</h2>';
-            } else {
-                document.getElementById('result').innerHTML = '<h2>❌ Invalid Credentials</h2>';
-            }
-        }
-    </script>
+    <p>Loading...</p>
 </body>
 </html>
