@@ -289,16 +289,22 @@
             
             // Validate credentials
             let role = '';
-           if (username === 'admin' && password === 'admin123') {
+          if (username === 'admin' && password === 'admin123') {
     localStorage.setItem('loggedInUser', 'admin');
     localStorage.setItem('userRole', 'ADMIN');
-    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    setTimeout(() => {
+        window.location.href = 'dashboard.html';
+    }, 1500);
+    document.getElementById('result').innerHTML = '<h2>✅ Login Successful! Redirecting...</h2>';
 } else if (username === 'hassan' && password === 'user123') {
     localStorage.setItem('loggedInUser', 'hassan');
     localStorage.setItem('userRole', 'USER');
-    setTimeout(() => window.location.href = 'dashboard.html', 1000);
+    setTimeout(() => {
+        window.location.href = 'dashboard.html';
+    }, 1500);
+    document.getElementById('result').innerHTML = '<h2>✅ Login Successful! Redirecting...</h2>';
 } else {
-    alert('Invalid credentials');
+    document.getElementById('result').innerHTML = '<h2>❌ Invalid Credentials</h2>';
 }
             
             // Login successful
