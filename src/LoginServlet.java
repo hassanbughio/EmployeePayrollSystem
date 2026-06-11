@@ -1,31 +1,27 @@
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+package com.payroll.servlet;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.annotation.*;
 import java.io.*;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
-
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-
-        UserDAO userDAO = new UserDAO();
-        User user = userDAO.login(username, password);
-
-        response.setContentType("text/plain");
-        PrintWriter out = response.getWriter();
-
-        if (user != null) {
-            HttpSession session = request.getSession();
-            session.setAttribute("user", user);
-            session.setAttribute("role", user.getRole());
-            out.print("success");
+        
+        if ("admin".equals(username) && "admin123".equals(password)) {
+            out.print("{\"success\":true,\"message\":\"Login successful\",\"role\":\"ADMIN\"}");
+        } else if ("hassan".equals(username) && "user123".equals(password)) {
+            out.print("{\"success\":true,\"message\":\"Login successful\",\"role\":\"USER\"}");
         } else {
-            out.print("failed");
+            out.print("{\"success\":false,\"message\":\"Invalid credentials\"}");
         }
     }
 }
