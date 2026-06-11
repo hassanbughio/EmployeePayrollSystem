@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payroll System</title>
     <style>
         * {
@@ -26,14 +28,6 @@
             padding: 40px;
             max-width: 450px;
             width: 100%;
-        }
-        
-        .login-form {
-            display: block;
-        }
-        
-        .dashboard {
-            display: none;
         }
         
         .icon {
@@ -113,168 +107,42 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-        }
-        
-        .btn-login {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             margin-top: 10px;
         }
         
-        .btn-login:hover {
+        .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        .btn-logout {
-            background-color: #dc3545;
-            color: white;
-            margin-top: 20px;
-        }
-        
-        .btn-logout:hover {
-            background-color: #c82333;
-        }
-        
-        .menu-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: 30px;
-        }
-        
-        .menu-item {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 120px;
-        }
-        
-        .menu-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
-        }
-        
-        .menu-item-icon {
-            font-size: 30px;
-            margin-bottom: 10px;
-        }
-        
-        .menu-item-text {
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        .welcome-text {
-            text-align: center;
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-        
-        .user-info {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        
-        .user-info-text {
-            color: #666;
-            font-size: 14px;
-        }
-        
-        .user-info-bold {
-            color: #333;
-            font-weight: 600;
-            font-size: 16px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- LOGIN FORM -->
-        <div class="login-form" id="loginForm">
-            <div class="icon">👔</div>
-            <h1>Payroll System</h1>
-            <p class="subtitle">Employee Management Portal</p>
-            
-            <div class="error" id="errorMsg"></div>
-            <div class="success" id="successMsg"></div>
-            
-            <div class="form-group">
-                <label>Username</label>
-                <input type="text" id="username" placeholder="Enter username" value="admin">
-            </div>
-            
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="password" placeholder="Enter password" value="admin123">
-            </div>
-            
-            <div class="form-group">
-                <label>Role</label>
-                <input type="text" id="role" placeholder="Role" value="Admin" readonly>
-            </div>
-            
-            <button class="btn btn-login" onclick="login()">🔐 Login</button>
+        <div class="icon">👔</div>
+        <h1>Payroll System</h1>
+        <p class="subtitle">Employee Management Portal</p>
+        
+        <div class="error" id="errorMsg"></div>
+        <div class="success" id="successMsg"></div>
+        
+        <div class="form-group">
+            <label>Username</label>
+            <input type="text" id="username" placeholder="Enter username" value="admin">
         </div>
         
-        <!-- DASHBOARD -->
-        <div class="dashboard" id="dashboard">
-            <h1>Dashboard</h1>
-            
-            <div class="user-info">
-                <div class="user-info-text">Welcome,</div>
-                <div class="user-info-bold" id="userDisplay">Admin</div>
-            </div>
-            
-            <div class="welcome-text">Select a module to continue</div>
-            
-            <div class="menu-grid">
-                <div class="menu-item" onclick="openModule('dashboard')">
-                    <div class="menu-item-icon">📊</div>
-                    <div class="menu-item-text">Dashboard</div>
-                </div>
-                
-                <div class="menu-item" onclick="openModule('employees')">
-                    <div class="menu-item-icon">👥</div>
-                    <div class="menu-item-text">Employees</div>
-                </div>
-                
-                <div class="menu-item" onclick="openModule('payroll')">
-                    <div class="menu-item-icon">💰</div>
-                    <div class="menu-item-text">Payroll</div>
-                </div>
-                
-                <div class="menu-item" onclick="openModule('attendance')">
-                    <div class="menu-item-icon">📅</div>
-                    <div class="menu-item-text">Attendance</div>
-                </div>
-            </div>
-            
-            <div class="menu-grid" style="margin-top: 15px;">
-                <div class="menu-item" onclick="openModule('reports')">
-                    <div class="menu-item-icon">📈</div>
-                    <div class="menu-item-text">Reports</div>
-                </div>
-                
-                <div class="menu-item" style="background: #dc3545;" onclick="logout()">
-                    <div class="menu-item-icon">🚪</div>
-                    <div class="menu-item-text">Logout</div>
-                </div>
-            </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="Enter password" value="admin123">
         </div>
+        
+        <div class="form-group">
+            <label>Role</label>
+            <input type="text" id="role" placeholder="Role" value="Admin" readonly>
+        </div>
+        
+        <button class="btn" onclick="login()">🔐 Login</button>
     </div>
     
     <script>
@@ -287,58 +155,32 @@
             errorMsg.style.display = 'none';
             successMsg.style.display = 'none';
             
-            // Validate credentials
-            let role = '';
-          if (username === 'admin' && password === 'admin123') {
-    localStorage.setItem('loggedInUser', 'admin');
-    localStorage.setItem('userRole', 'ADMIN');
-    setTimeout(() => {
-        window.location.href = 'dashboard.html';
-    }, 1500);
-    document.getElementById('result').innerHTML = '<h2>✅ Login Successful! Redirecting...</h2>';
-} else if (username === 'hassan' && password === 'user123') {
-    localStorage.setItem('loggedInUser', 'hassan');
-    localStorage.setItem('userRole', 'USER');
-    setTimeout(() => {
-        window.location.href = 'dashboard.html';
-    }, 1500);
-    document.getElementById('result').innerHTML = '<h2>✅ Login Successful! Redirecting...</h2>';
-} else {
-    document.getElementById('result').innerHTML = '<h2>❌ Invalid Credentials</h2>';
-}
-            
-            // Login successful
-            localStorage.setItem('loggedInUser', username);
-            localStorage.setItem('userRole', role);
-            
-            document.getElementById('userDisplay').textContent = username.charAt(0).toUpperCase() + username.slice(1);
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('dashboard').style.display = 'block';
-            
-            successMsg.textContent = '✅ Login Successful!';
-            successMsg.style.display = 'block';
+            if (username === 'admin' && password === 'admin123') {
+                localStorage.setItem('loggedInUser', 'admin');
+                localStorage.setItem('userRole', 'ADMIN');
+                successMsg.textContent = '✅ Login Successful! Redirecting...';
+                successMsg.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } else if (username === 'hassan' && password === 'user123') {
+                localStorage.setItem('loggedInUser', 'hassan');
+                localStorage.setItem('userRole', 'USER');
+                successMsg.textContent = '✅ Login Successful! Redirecting...';
+                successMsg.style.display = 'block';
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            } else {
+                errorMsg.textContent = '❌ Invalid username or password!';
+                errorMsg.style.display = 'block';
+            }
         }
         
-        function logout() {
-            localStorage.removeItem('loggedInUser');
-            localStorage.removeItem('userRole');
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('dashboard').style.display = 'none';
-            document.getElementById('username').value = 'admin';
-            document.getElementById('password').value = 'admin123';
-        }
-        
-        function openModule(module) {
-            alert('🔄 ' + module.charAt(0).toUpperCase() + module.slice(1) + ' module coming soon!\n\nStay tuned for the next update.');
-        }
-        
-        // Check if already logged in
         window.onload = function() {
             const user = localStorage.getItem('loggedInUser');
             if (user) {
-                document.getElementById('userDisplay').textContent = user.charAt(0).toUpperCase() + user.slice(1);
-                document.getElementById('loginForm').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
+                window.location.href = 'dashboard.html';
             }
         }
     </script>
