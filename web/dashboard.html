@@ -163,11 +163,11 @@
                 <i class="fas fa-chart-bar"></i> Dept Reports
             </a>
         </li>
-        <li class="nav-item mt-3">
-            <a href="login.html" style="color: #e94560;">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </a>
-        </li>
+<li class="nav-item mt-3">
+    <a href="#" onclick="logout()" style="color: #e94560;">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+</li>
     </ul>
 </div>
 
@@ -1271,7 +1271,20 @@
         });
     });
 
+// ===== LOGOUT FUNCTION =====
+function logout() {
+    localStorage.removeItem('loggedInUser');
+    localStorage.removeItem('userRole');
+    window.location.href = 'login.html';
+}
 
+// ===== CHECK LOGIN ON PAGE LOAD =====
+window.onload = function() {
+    const user = localStorage.getItem('loggedInUser');
+    if (!user) {
+        window.location.href = 'login.html';
+    }
+}
     $(document).ready(function() {
         loadStats();
         loadEmployees();
