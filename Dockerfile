@@ -1,17 +1,28 @@
+# Multi-stage Maven build
+FROM maven:3.8.1-openjdk-17 AS builder
+
+WORKDIR /app
+
+# Copy pom.xml
+COPY pom.xml .
+
+# Download dependencies
+RUN mvn dependency:resolve
+
+# Copy source code
+COPY src ./src
+
+# Build with Maven
+RUN mvn clean package -DskipTests
+
+# Final stage
 FROM tomcat:10.1-jdk17
 
 # Remove default webapps
 RUN rm -rf /usr/local/tomcat/webapps/*
 
-# Copy web folder to Tomcat
-COPY web/ /usr/local/tomcat/webapps/ROOT/
-
-# Copy compiled classes
-COPY out/production/EmployeePayrollSystem/ /usr/local/tomcat/webapps/ROOT/WEB-INF/classes/
-
-# Copy lib JARs
-COPY lib/ /usr/local/tomcat/webapps/ROOT/WEB-INF/lib/
-COPY web/WEB-INF/lib/ /usr/local/tomcat/webapps/ROOT/WEB-INF/lib/
+# Copy built WAR from builder
+COPY --from=builder /app/target/payroll.war /usr/local/tomcat/webapps/ROOT.war
 
 EXPOSE 8080
 
