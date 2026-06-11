@@ -17,7 +17,8 @@ public class GetStatsServlet extends HttpServlet {
 
         int employees = 0, pendingLeaves = 0, payroll = 0, departments = 0;
 
-        try (Connection con = DBConnection.getConnection()) {
+
+        try (Connection con = com.payroll.util.DBConnection.getConnection()) {
             ResultSet rs;
 
             rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM employees");

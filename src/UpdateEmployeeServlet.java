@@ -28,7 +28,7 @@ public class UpdateEmployeeServlet extends HttpServlet {
         }
 
         // Database update karo
-        try (Connection con = DBConnection.getConnection()) {
+        try (Connection con = com.payroll.util.DBConnection.getConnection()) {
             PreparedStatement ps;
 
             if (photoFileName != null) {

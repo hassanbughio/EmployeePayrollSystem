@@ -21,7 +21,7 @@ public class GetAttendanceServlet extends HttpServlet {
         StringBuilder json = new StringBuilder("[");
         boolean first = true;
 
-        try (Connection con = DBConnection.getConnection()) {
+        try (Connection con = com.payroll.util.DBConnection.getConnection()) {
             String sql = "SELECT a.*, e.emp_name FROM attendance a " +
                     "JOIN employees e ON a.emp_id = e.emp_id WHERE 1=1";
 

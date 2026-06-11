@@ -21,7 +21,7 @@ public class GenerateReportServlet extends HttpServlet {
         String photoFileName = "";
         double basicSalary = 0, bonus = 0, tax = 0, deductions = 0, netSalary = 0;
 
-        try (Connection con = DBConnection.getConnection()) {
+        try (Connection con = com.payroll.util.DBConnection.getConnection()) {
 
             // Employee name aur photo lo
             PreparedStatement ps = con.prepareStatement(

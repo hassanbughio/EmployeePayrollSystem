@@ -5,7 +5,7 @@ public class PayrollDAO {
     // 1. GENERATE PAYROLL
     public void generatePayroll(Payroll payroll) {
         String sql = "INSERT INTO payroll (emp_id, month, year, basic_salary, bonus, tax, deductions, net_salary, payment_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = com.payroll.util.DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, payroll.getEmpId());
@@ -28,7 +28,7 @@ public class PayrollDAO {
     // 2. VIEW PAYROLL BY EMPLOYEE
     public void viewPayroll(int empId) {
         String sql = "SELECT * FROM payroll WHERE emp_id=?";
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = com.payroll.util.DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, empId);

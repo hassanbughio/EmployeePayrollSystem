@@ -7,7 +7,7 @@ public class EmployeeDAO {
     // 1. ADD EMPLOYEE
     public void addEmployee(Employee emp) {
         String sql = "INSERT INTO employees (emp_name, email, phone, salary, dept_id) VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = com.payroll.util.DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, emp.getEmpName());
@@ -26,7 +26,7 @@ public class EmployeeDAO {
     // 2. UPDATE EMPLOYEE
     public void updateEmployee(Employee emp) {
         String sql = "UPDATE employees SET emp_name=?, email=?, phone=?, salary=?, dept_id=? WHERE emp_id=?";
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = com.payroll.util.DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, emp.getEmpName());
@@ -46,7 +46,7 @@ public class EmployeeDAO {
     // 3. DELETE EMPLOYEE
     public void deleteEmployee(int empId) {
         String sql = "DELETE FROM employees WHERE emp_id=?";
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = com.payroll.util.DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, empId);
@@ -62,7 +62,7 @@ public class EmployeeDAO {
     public Employee searchEmployee(int empId) {
         String sql = "SELECT * FROM employees WHERE emp_id=?";
         Employee emp = null;
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = com.payroll.util.DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, empId);

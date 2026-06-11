@@ -20,7 +20,8 @@ public class MarkAttendanceServlet extends HttpServlet {
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
 
-        try (Connection con = DBConnection.getConnection()) {
+
+        try (Connection con = com.payroll.util.DBConnection.getConnection()) {
 
             PreparedStatement check = con.prepareStatement(
                     "SELECT * FROM attendance WHERE emp_id=? AND attendance_date=?");

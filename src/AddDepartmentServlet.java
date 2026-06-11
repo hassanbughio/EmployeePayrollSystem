@@ -16,7 +16,7 @@ public class AddDepartmentServlet extends HttpServlet {
         response.setContentType("text/plain");
         PrintWriter out = response.getWriter();
 
-        try (Connection con = DBConnection.getConnection()) {
+        try (Connection con = com.payroll.util.DBConnection.getConnection()) {
             PreparedStatement ps = con.prepareStatement(
                     "INSERT INTO departments (dept_name, location) VALUES (?, ?)");
             ps.setString(1, deptName);

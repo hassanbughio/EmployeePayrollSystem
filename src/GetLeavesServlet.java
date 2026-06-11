@@ -16,7 +16,7 @@ public class GetLeavesServlet extends HttpServlet {
         StringBuilder json = new StringBuilder("[");
         boolean first = true;
 
-        try (Connection con = DBConnection.getConnection()) {
+        try (Connection con = com.payroll.util.DBConnection.getConnection()) {
             ResultSet rs = con.createStatement().executeQuery("SELECT * FROM leave_requests");
             while (rs.next()) {
                 if (!first) json.append(",");

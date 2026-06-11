@@ -18,7 +18,7 @@ public class GetDepartmentsServlet extends HttpServlet {
         StringBuilder json = new StringBuilder("[");
         boolean first = true;
 
-        try (Connection con = DBConnection.getConnection()) {
+        try (Connection con = com.payroll.util.DBConnection.getConnection()) {
             ResultSet rs = con.createStatement().executeQuery("SELECT * FROM departments");
             while (rs.next()) {
                 if (!first) json.append(",");

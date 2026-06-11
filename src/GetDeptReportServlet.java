@@ -18,7 +18,7 @@ public class GetDeptReportServlet extends HttpServlet {
         StringBuilder json = new StringBuilder("[");
         boolean first = true;
 
-        try (Connection con = DBConnection.getConnection()) {
+        try (Connection con = com.payroll.util.DBConnection.getConnection()) {
             String sql = "SELECT d.dept_id, d.dept_name, d.location, " +
                     "COUNT(e.emp_id) as emp_count, " +
                     "COALESCE(SUM(e.salary), 0) as total_salary, " +

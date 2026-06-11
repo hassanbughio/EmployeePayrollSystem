@@ -5,7 +5,7 @@ public class Main {
 
         // 1. DB Connection Test
         System.out.println("--- Test 1: DB Connection ---");
-        DBConnection.getConnection();
+        com.payroll.util.DBConnection.getConnection();
 
         // 2. Employee Test
         System.out.println("\n--- Test 2: Employee CRUD ---");

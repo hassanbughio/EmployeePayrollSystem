@@ -7,7 +7,7 @@ public class UserDAO {
         String sql = "SELECT * FROM users WHERE username=? AND password=?";
         User user = null;
 
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = com.payroll.util.DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, username);

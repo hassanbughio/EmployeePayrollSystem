@@ -5,7 +5,7 @@ public class LeaveDAO {
     // 1. APPLY LEAVE
     public void applyLeave(LeaveRequest leave) {
         String sql = "INSERT INTO leave_requests (emp_id, leave_type, start_date, end_date, status) VALUES (?, ?, ?, ?, ?)";
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = com.payroll.util.DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setInt(1, leave.getEmpId());
@@ -34,7 +34,7 @@ public class LeaveDAO {
     // STATUS UPDATE HELPER
     private void updateStatus(int leaveId, String status) {
         String sql = "UPDATE leave_requests SET status=? WHERE leave_id=?";
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = com.payroll.util.DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, status);
@@ -50,7 +50,7 @@ public class LeaveDAO {
     // 4. VIEW ALL LEAVES
     public void viewAllLeaves() {
         String sql = "SELECT * FROM leave_requests";
-        try (Connection con = DBConnection.getConnection();
+        try (Connection con = com.payroll.util.DBConnection.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
