@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Payroll System</title>
+    <title>Payroll System Login</title>
     <style>
         * {
             margin: 0;
@@ -21,111 +21,114 @@
             padding: 20px;
         }
         
-        .container {
+        .login-container {
             background: white;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            padding: 40px;
-            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 50px 40px;
+            max-width: 500px;
             width: 100%;
         }
         
-        .icon {
+        .logo {
             text-align: center;
-            font-size: 60px;
+            font-size: 80px;
             margin-bottom: 20px;
         }
         
-        h1 {
-            color: #1a3a52;
+        .title {
             text-align: center;
-            font-size: 32px;
+            color: #1a3a52;
+            font-size: 36px;
+            font-weight: 700;
             margin-bottom: 10px;
         }
         
         .subtitle {
             text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 14px;
-        }
-        
-        .error {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-            text-align: center;
-        }
-        
-        .success {
-            background-color: #d4edda;
-            color: #155724;
-            padding: 12px;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            display: none;
-            text-align: center;
+            color: #999;
+            font-size: 16px;
+            margin-bottom: 40px;
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
-        label {
+        .form-group label {
             display: block;
             color: #333;
             font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 14px;
+            margin-bottom: 10px;
+            font-size: 15px;
         }
         
-        input {
+        .form-group input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 14px;
-            font-family: Arial;
-            transition: border-color 0.3s;
+            padding: 14px 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: Arial, sans-serif;
         }
         
-        input:focus {
+        .form-group input:focus {
             outline: none;
             border-color: #667eea;
-            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
         }
         
-        .btn {
+        .login-btn {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
             margin-top: 10px;
         }
         
-        .btn:hover {
+        .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+            border: 1px solid #c3e6cb;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="icon">👔</div>
-        <h1>Payroll System</h1>
+    <div class="login-container">
+        <div class="logo">👔</div>
+        <h1 class="title">Payroll System</h1>
         <p class="subtitle">Employee Management Portal</p>
         
-        <div class="error" id="errorMsg"></div>
-        <div class="success" id="successMsg"></div>
+        <div class="error-message" id="errorMsg"></div>
+        <div class="success-message" id="successMsg"></div>
         
         <div class="form-group">
             <label>Username</label>
@@ -142,7 +145,7 @@
             <input type="text" id="role" placeholder="Role" value="Admin" readonly>
         </div>
         
-        <button class="btn" onclick="login()">🔐 Login</button>
+        <button class="login-btn" onclick="login()">Login</button>
     </div>
     
     <script>
@@ -158,7 +161,7 @@
             if (username === 'admin' && password === 'admin123') {
                 localStorage.setItem('loggedInUser', 'admin');
                 localStorage.setItem('userRole', 'ADMIN');
-                successMsg.textContent = '✅ Login Successful! Redirecting...';
+                successMsg.textContent = 'Login Successful! Redirecting...';
                 successMsg.style.display = 'block';
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
@@ -166,13 +169,13 @@
             } else if (username === 'hassan' && password === 'user123') {
                 localStorage.setItem('loggedInUser', 'hassan');
                 localStorage.setItem('userRole', 'USER');
-                successMsg.textContent = '✅ Login Successful! Redirecting...';
+                successMsg.textContent = 'Login Successful! Redirecting...';
                 successMsg.style.display = 'block';
                 setTimeout(() => {
                     window.location.href = 'dashboard.html';
                 }, 1500);
             } else {
-                errorMsg.textContent = '❌ Invalid username or password!';
+                errorMsg.textContent = 'Invalid username or password!';
                 errorMsg.style.display = 'block';
             }
         }
