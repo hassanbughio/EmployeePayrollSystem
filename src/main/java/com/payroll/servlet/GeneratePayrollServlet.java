@@ -1,4 +1,6 @@
 package com.payroll.servlet;
+import com.payroll.Payroll;
+import com.payroll.dao.PayrollDAO;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
