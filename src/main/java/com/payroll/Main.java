@@ -1,4 +1,13 @@
-package com.payroll;
+package com.payroll.dao;
+
+import com.payroll.Employee;
+import com.payroll.LeaveRequest;
+import com.payroll.ReportGenerator;
+import com.payroll.dao.EmployeeDAO;
+import com.payroll.dao.UserDAO;
+import com.payroll.dao.LeaveDAO;
+import com.payroll.dao.PayrollDAO;
+
 public class Main {
     public static void main(String[] args) {
 

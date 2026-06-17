@@ -1,4 +1,7 @@
 package com.payroll.util;
+
+import com.payroll.User;
+
 public class Session {
 
     private static User loggedInUser = null;

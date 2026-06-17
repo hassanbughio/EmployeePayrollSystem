@@ -1,5 +1,8 @@
 
 package com.payroll.dao;
+
+import com.payroll.Employee;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

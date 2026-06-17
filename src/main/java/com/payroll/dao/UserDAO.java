@@ -1,4 +1,4 @@
-package com.payroll.dao;
+import com.payroll.User;
 import java.sql.*;
 
 public class UserDAO {

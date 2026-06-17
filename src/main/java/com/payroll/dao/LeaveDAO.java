@@ -1,4 +1,6 @@
 package com.payroll.dao;
+import com.payroll.LeaveRequest;
+
 import java.sql.*;
 
 public class LeaveDAO {
