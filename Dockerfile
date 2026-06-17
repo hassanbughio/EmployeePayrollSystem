@@ -6,11 +6,14 @@ WORKDIR /app
 # Copy pom.xml
 COPY pom.xml .
 
-# Download dependencies
-RUN mvn dependency:resolve
-
 # Copy source code
 COPY src ./src
+
+# Copy web folder (IMPORTANT - HTML, CSS, JS files)
+COPY web ./web
+
+# Download dependencies
+RUN mvn dependency:resolve
 
 # Build with Maven
 RUN mvn clean package -DskipTests
