@@ -1,3 +1,4 @@
+package com.payroll;
 public class LeaveRequest {
     private int leaveId;
     private int empId;
