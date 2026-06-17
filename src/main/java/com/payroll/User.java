@@ -1,3 +1,4 @@
+package com.payroll;
 public class User {
 
     private int userId;
