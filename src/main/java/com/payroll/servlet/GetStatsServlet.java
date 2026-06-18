@@ -1,4 +1,5 @@
 package com.payroll.servlet;
+
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -17,24 +18,40 @@ public class GetStatsServlet extends HttpServlet {
         
         int employees = 0, pendingLeaves = 0, payroll = 0, departments = 0;
         
-        try (Connection con = com.payroll.util.DBConnection.getConnection()) {
-            ResultSet rs;
+        try {
+            Connection con = com.payroll.util.DBConnection.getConnection();
             
-            // Total Employees
-            rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM employees");
-            if (rs.next()) employees = rs.getInt(1);
+            // CHECK IF CONNECTION IS NULL
+            if (con == null) {
+                System.out.println("❌ Database Connection Failed!");
+                out.print("{\"error\":\"Database connection failed\",\"employees\":0,\"pendingLeaves\":0,\"payroll\":0,\"departments\":0}");
+                return;
+            }
             
-            // Pending Leaves (FIXED TABLE NAME: leaves NOT leave_requests)
-            rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM leaves WHERE status='PENDING'");
-            if (rs.next()) pendingLeaves = rs.getInt(1);
+            System.out.println("✅ Database Connected!");
             
-            // Total Payroll
-            rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM payroll");
-            if (rs.next()) payroll = rs.getInt(1);
-            
-            // Total Departments
-            rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM departments");
-            if (rs.next()) departments = rs.getInt(1);
+            try {
+                ResultSet rs;
+                
+                // Total Employees
+                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM employees");
+                if (rs.next()) employees = rs.getInt(1);
+                
+                // Pending Leaves
+                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM leaves WHERE status='PENDING'");
+                if (rs.next()) pendingLeaves = rs.getInt(1);
+                
+                // Total Payroll
+                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM payroll");
+                if (rs.next()) payroll = rs.getInt(1);
+                
+                // Total Departments
+                rs = con.createStatement().executeQuery("SELECT COUNT(*) FROM departments");
+                if (rs.next()) departments = rs.getInt(1);
+                
+            } finally {
+                if (con != null) con.close();
+            }
             
         } catch (SQLException e) {
             System.out.println("Database Error: " + e.getMessage());
