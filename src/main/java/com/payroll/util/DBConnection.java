@@ -10,42 +10,57 @@ public class DBConnection {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             
-            String url = System.getenv("MYSQL_URL");
+            String mysqlUrl = System.getenv("MYSQL_URL");
             String user = System.getenv("MYSQL_USER");
             String password = System.getenv("MYSQL_PASSWORD");
             
-            // Remove jdbc: prefix if exists
-            if (url != null && url.startsWith("jdbc:")) {
-                url = url.substring(5); // Remove "jdbc:"
+            System.out.println("MYSQL_URL from env: " + mysqlUrl);
+            System.out.println("MYSQL_USER from env: " + user);
+            System.out.println("MYSQL_PASSWORD from env: " + (password != null ? "***" : "NULL"));
+            
+            String finalUrl = null;
+            
+            // Parse URL properly
+            if (mysqlUrl != null && !mysqlUrl.isEmpty()) {
+                // If URL contains credentials, extract host and database
+                if (mysqlUrl.contains("@")) {
+                    // Format: jdbc:mysql://user:pass@host:port/database
+                    String[] parts = mysqlUrl.split("@");
+                    if (parts.length > 1) {
+                        finalUrl = "jdbc:mysql://" + parts[1];
+                    }
+                } else {
+                    // Already clean
+                    if (!mysqlUrl.startsWith("jdbc:")) {
+                        finalUrl = "jdbc:mysql://" + mysqlUrl;
+                    } else {
+                        finalUrl = mysqlUrl;
+                    }
+                }
             }
             
-            // Add jdbc: prefix if not exists
-            if (url != null && !url.startsWith("jdbc:")) {
-                url = "jdbc:" + url;
-            }
-            
-            // Remove credentials from URL if present
-            if (url != null && url.contains("@")) {
-                // Format: jdbc:mysql://user:pass@host/db
-                String[] parts = url.split("@");
-                url = "jdbc:mysql://" + parts[1]; // Keep only host/db part
-            }
-            
-            if (url == null || url.isEmpty()) {
-                url = "jdbc:mysql://localhost:3306/payroll_system";
+            // Fallback to localhost
+            if (finalUrl == null || finalUrl.isEmpty()) {
+                finalUrl = "jdbc:mysql://localhost:3306/payroll_system";
                 user = "root";
                 password = "";
             }
             
-            System.out.println("Connecting to: " + url);
-            con = DriverManager.getConnection(url, user, password);
+            System.out.println("Connecting to: " + finalUrl);
+            System.out.println("With user: " + user);
+            
+            con = DriverManager.getConnection(finalUrl, user, password);
             System.out.println("✅ Database Connected Successfully!");
             
         } catch (ClassNotFoundException e) {
-            System.out.println("❌ Driver Not Found!");
+            System.out.println("❌ Driver Not Found: " + e.getMessage());
             e.printStackTrace();
         } catch (SQLException e) {
-            System.out.println("❌ Connection Failed: " + e.getMessage());
+            System.out.println("❌ SQL Connection Error: " + e.getMessage());
+            System.out.println("Error Code: " + e.getErrorCode());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("❌ Unexpected Error: " + e.getMessage());
             e.printStackTrace();
         }
         return con;
